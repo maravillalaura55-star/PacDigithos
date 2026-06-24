@@ -1,6 +1,15 @@
 let pacienteActual = null;
 
-const select = document.getElementById("pacienteSelect");
+window.onload = function () {
+  const select = document.getElementById("pacienteSelect");
+
+  pacientes.forEach((p, index) => {
+    const option = document.createElement("option");
+    option.value = index;
+    option.text = p.nombre;
+    select.appendChild(option);
+  });
+};
 
 // cargar pacientes al select
 pacientes.forEach((p, index) => {
