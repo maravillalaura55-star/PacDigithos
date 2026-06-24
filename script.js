@@ -1,170 +1,72 @@
-window.addEventListener("DOMContentLoaded", () => {
+let pacienteActual = null;
 
-if (typeof pacientes === "undefined") {
-console.error("❌ ERROR: pacientes.js no cargó");
-return;
-}
+const select = document.getElementById("pacienteSelect");
 
-console.log("✅ Base de datos conectada:", pacientes);
-
-// ===============================
-// LISTA DE PACIENTES
-// ===============================
-const lista = document.getElementById("listaPacientes");
-
-if (lista) {
-
-pacientes.forEach((p, i) => {
-
-let div = document.createElement("div");
-
-div.className = p.riesgo;
-div.innerHTML = `<b>${p.nombre}</b><br>${p.diag}`;
-
-div.onclick = () => mostrarPaciente(i);
-
-lista.appendChild(div);
-
+// cargar pacientes al select
+pacientes.forEach((p, index) => {
+  const option = document.createElement("option");
+  option.value = index;
+  option.text = p.nombre;
+  select.appendChild(option);
 });
 
+function login() {
+  const index = select.value;
+  pacienteActual = pacientes[index];
+
+  document.getElementById("panel").classList.remove("hidden");
+
+  document.getElementById("nombrePaciente").innerText =
+    pacienteActual.nombre;
+
+  document.getElementById("infoPaciente").innerText =
+    `Edad: ${pacienteActual.edad} | Dx: ${pacienteActual.diagnostico} | Médico: ${pacienteActual.medico} | Cita: ${pacienteActual.cita}`;
+
+  mostrarMedicamentos();
 }
 
-});
+function mostrarMedicamentos() {
+  const cont = document.getElementById("medicamentos");
+  cont.innerHTML = "";
 
-// ===============================
-// MOSTRAR PACIENTE
-// ===============================
-function mostrarPaciente(i){
+  pacienteActual.medicamentos.forEach((m, i) => {
+    const div = document.createElement("div");
 
-let p = pacientes[i];
+    div.innerHTML = `
+      <p><b>${m.nombre}</b> - ${m.dosis} - ${m.indicacion}</p>
+      <button onclick="marcar(${i})">
+        ${m.estado ? "Hecho ✅" : "Marcar como hecho"}
+      </button>
+    `;
 
-// EXPEDIENTE
-document.getElementById("info").innerHTML = `
-<div class="box">
-<h2>${p.nombre}</h2>
-<p><b>Edad:</b> ${p.edad}</p>
-<p><b>Diagnóstico:</b> ${p.diag}</p>
-<p><b>Médico:</b> ${p.medico}</p>
-<p><b>Servicio:</b> ${p.servicio}</p>
-<p><b>Próxima cita:</b> ${p.proximaCita}</p>
-<p><b>Medicamentos:</b> ${p.medicamentos}</p>
-<p><b>Dosis:</b> ${p.dosis}</p>
-</div>
-`;
+    if (m.estado) {
+      div.style.background = "#d4f7d4";
+    }
 
-// EDUCACIÓN
-mostrarEducacion(p);
-
-// ALERTAS
-mostrarAlertas(p);
+    cont.appendChild(div);
+  });
 }
 
-// ===============================
-// ALERTAS (CON BOTÓN HECHO)
-// ===============================
-function mostrarAlertas(p){
-
-let alertas = "";
-
-if(p.diag.toLowerCase().includes("diabetes")){
-alertas += `
-<div class="cita" id="a1">
-🩸 Medir glucosa
-<button onclick="completar('a1')">Hecho</button>
-</div>`;
+function marcar(i) {
+  pacienteActual.medicamentos[i].estado = true;
+  mostrarMedicamentos();
 }
 
-if(p.diag.toLowerCase().includes("hipertensión")){
-alertas += `
-<div class="cita" id="a2">
-💓 Tomar presión arterial
-<button onclick="completar('a2')">Hecho</button>
-</div>`;
-}
+function guardarMedicion() {
+  const g = document.getElementById("glucosa").value;
+  const p = document.getElementById("presion").value;
 
-alertas += `
-<div class="cita" id="a3">
-⏰ Tomar medicamentos
-<button onclick="completar('a3')">Hecho</button>
-</div>`;
+  const historial = document.getElementById("historial");
 
-const box = document.getElementById("alertas");
+  const div = document.createElement("div");
+  div.innerHTML = `🩸 Glucosa: ${g} | ❤️ Presión: ${p} | ${new Date().toLocaleString()}`;
 
-if(box){
-box.innerHTML = alertas;
-}
-}
+  historial.appendChild(div);
 
-// ===============================
-// COMPLETAR ALERTA
-// ===============================
-function completar(id){
-
-let el = document.getElementById(id);
-
-if(!el) return;
-
-el.style.background = "#c8e6c9";
-el.style.borderLeft = "6px solid #2e7d32";
-el.innerHTML += " ✔ Realizado";
-}
-
-// ===============================
-// EDUCACIÓN DEL PACIENTE
-// ===============================
-function mostrarEducacion(paciente){
-
-let video = "";
-
-if (paciente.diag.toLowerCase().includes("diabetes")){
-video = "https://www.youtube.com/embed/wZAjVQWbMlE";
-}
-else if (paciente.diag.toLowerCase().includes("hipertensión")){
-video = "https://www.youtube.com/embed/8JjLhYwR3MM";
-}
-else if (paciente.diag.toLowerCase().includes("infarto")){
-video = "https://www.youtube.com/embed/2pQXc2nY2pQ";
-}
-else if (paciente.diag.toLowerCase().includes("neumonía")){
-video = "https://www.youtube.com/embed/7wX0g0k9Z3A";
-}
-else{
-video = "https://www.youtube.com/embed/8JjLhYwR3MM";
-}
-
-const box = document.getElementById("educacionBox");
-
-if(!box){
-console.error("❌ educacionBox no existe");
-return;
-}
-
-box.innerHTML = `
-<div class="edu-card">
-
-<h3>📚 Educación del paciente</h3>
-
-<iframe width="100%" height="220"
-src="${video}"
-frameborder="0"
-allowfullscreen>
-</iframe>
-
-<p><b>Diagnóstico:</b> ${paciente.diag}</p>
-
-</div>
-`;
-}
-
-// ===============================
-// MARCAR EDUCACIÓN
-// ===============================
-function marcarEducacion(){
-
-let status = document.getElementById("eduStatus");
-
-if(status){
-status.innerText = "Estado: VISTO ✔";
-status.style.color = "green";
-}
+  // Notificación navegador
+  if (Notification.permission === "granted") {
+    new Notification("Registro guardado correctamente");
+  } else {
+    Notification.requestPermission();
+  }
 }
