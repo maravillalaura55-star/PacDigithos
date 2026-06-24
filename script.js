@@ -33,7 +33,7 @@ function login() {
     pacienteActual.nombre;
 
   document.getElementById("infoPaciente").textContent =
-    `Edad: ${pacienteActual.edad} | Dx: ${pacienteActual.diagnostico} | Médico: ${pacienteActual.medico} | Cita: ${pacienteActual.cita}`;
+    `Edad: ${pacienteActual.edad} | Diagnóstico: ${pacienteActual.diagnostico} | Médico: ${pacienteActual.medico} | Cita: ${pacienteActual.cita}`;
 
   renderMedicamentos();
   renderHistorial();
