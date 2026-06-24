@@ -2,9 +2,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
   let pacienteActual = null;
 
+  // =========================
+  // CARGAR PACIENTES EN SELECT
+  // =========================
   const select = document.getElementById("pacienteSelect");
 
-  // llenar select
   pacientes.forEach((p, index) => {
     const option = document.createElement("option");
     option.value = index;
@@ -12,8 +14,12 @@ document.addEventListener("DOMContentLoaded", function () {
     select.appendChild(option);
   });
 
+  // =========================
+  // LOGIN
+  // =========================
   window.login = function () {
-    const index = select.value;
+    const index = document.getElementById("pacienteSelect").value;
+
     pacienteActual = pacientes[index];
 
     document.getElementById("panel").classList.remove("hidden");
@@ -27,46 +33,62 @@ document.addEventListener("DOMContentLoaded", function () {
     mostrarMedicamentos();
   };
 
+  // =========================
+  // MOSTRAR MEDICAMENTOS
+  // =========================
   function mostrarMedicamentos() {
     const cont = document.getElementById("medicamentos");
     cont.innerHTML = "";
 
     pacienteActual.medicamentos.forEach((m, i) => {
+
       const div = document.createElement("div");
 
       div.innerHTML = `
         <p><b>${m.nombre}</b> - ${m.dosis} - ${m.indicacion}</p>
-        <button onclick="marcar(${i})">
+        <button onclick="marcarMedicamento(${i})">
           ${m.estado ? "Hecho ✅" : "Marcar como hecho"}
         </button>
       `;
 
-      if (m.estado) div.style.background = "#d4f7d4";
+      if (m.estado) {
+        div.style.background = "#d4f7d4";
+      }
 
       cont.appendChild(div);
     });
   }
 
-  window.marcar = function (i) {
+  // =========================
+  // MARCAR MEDICAMENTO
+  // =========================
+  window.marcarMedicamento = function (i) {
     pacienteActual.medicamentos[i].estado = true;
     mostrarMedicamentos();
   };
 
+  // =========================
+  // GUARDAR MEDICIONES
+  // =========================
   window.guardarMedicion = function () {
-    const g = document.getElementById("glucosa").value;
-    const p = document.getElementById("presion").value;
+
+    const glucosa = document.getElementById("glucosa").value;
+    const presion = document.getElementById("presion").value;
 
     const historial = document.getElementById("historial");
 
     const div = document.createElement("div");
-    div.innerHTML =
-      `🩸 Glucosa: ${g} | ❤️ Presión: ${p} | ${new Date().toLocaleString()}`;
+
+    div.innerHTML = `
+      🩸 Glucosa: ${glucosa} | ❤️ Presión: ${presion} | ${new Date().toLocaleString()}
+    `;
 
     historial.appendChild(div);
 
+    // Notificación
     if (Notification.permission === "granted") {
-      new Notification("Registro guardado");
-    } else {
+      new Notification("Registro guardado correctamente");
+    } else if (Notification.permission !== "denied") {
       Notification.requestPermission();
     }
   };
