@@ -1,33 +1,32 @@
 const pacientes = [
-{
-nombre:"Juan Pérez",
-tipo:"hospital",
-edad:58,
-servicio:"Medicina Interna",
-diag:"Diabetes Mellitus tipo 2 descontrolada",
-medico:"Dr. López",
-sangre:"O+",
-folio:"DH001",
-cama:"11",
-riesgo:"rojo",
-proximaCita:"Monitoreo diario en hospitalización",
-medicamentos:"Insulina glargina + Metformina",
-dosis:"Insulina 20 UI nocturnas"
-},
-
-{
-nombre:"Ana Torres",
-tipo:"consulta",
-edad:34,
-servicio:"Cardiología",
-diag:"Hipertensión arterial",
-medico:"Dra. Ruiz",
-sangre:"A+",
-folio:"DH002",
-cama:"N/A",
-riesgo:"amarillo",
-proximaCita:"Control en 15 días",
-medicamentos:"Losartán",
-dosis:"50 mg cada 24 horas"
-}
+  {
+    nombre: "Juan Pérez",
+    edad: 45,
+    diagnostico: "Diabetes tipo 2",
+    medico: "Dr. López",
+    cita: "2026-06-30",
+    medicamentos: [
+      { nombre: "Metformina", dosis: "850 mg", indicacion: "cada 12h", estado: false }
+    ]
+  },
+  {
+    nombre: "María García",
+    edad: 60,
+    diagnostico: "Hipertensión",
+    medico: "Dra. Ramírez",
+    cita: "2026-07-02",
+    medicamentos: [
+      { nombre: "Losartán", dosis: "50 mg", indicacion: "cada 24h", estado: false }
+    ]
+  },
+  {
+    nombre: "Carlos López",
+    edad: 38,
+    diagnostico: "Asma",
+    medico: "Dr. Hernández",
+    cita: "2026-07-10",
+    medicamentos: [
+      { nombre: "Salbutamol", dosis: "2 inhalaciones", indicacion: "según síntomas", estado: false }
+    ]
+  }
 ];
